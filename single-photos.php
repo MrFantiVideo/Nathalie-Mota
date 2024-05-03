@@ -34,6 +34,8 @@
             </div>
             <?php
                 $current_post_date = get_the_date('Y-m-d H:i:s');
+                $categories = wp_get_post_categories($current_post_id, array('fields' => 'ids'));
+        
                 $next_image_args = array(
                     'post_type' => 'photos',
                     'posts_per_page' => 1,
@@ -45,9 +47,16 @@
                             'inclusive' => false
                         ),
                     ),
-                    'post__not_in' => array($current_post_id)
+                    'post__not_in' => array($current_post_id),
+                    'tax_query' => array(
+                        array(
+                            'taxonomy' => 'category',
+                            'field' => 'term_id',
+                            'terms' => $categories,
+                        ),
+                    ),
                 );
-
+        
                 $prev_image_args = array(
                     'post_type' => 'photos',
                     'posts_per_page' => 1,
@@ -59,30 +68,39 @@
                             'inclusive' => false
                         ),
                     ),
-                    'post__not_in' => array($current_post_id)
+                    'post__not_in' => array($current_post_id),
+                    'tax_query' => array(
+                        array(
+                            'taxonomy' => 'category',
+                            'field' => 'term_id',
+                            'terms' => $categories,
+                        ),
+                    ),
                 );
-
+        
                 $next_image = get_posts($next_image_args);
                 $prev_image = get_posts($prev_image_args);
             ?>
             <div class="next-image-info">
-                <?php if (!empty($next_image)): ?>
-                    <a href="<?php echo get_permalink($next_image[0]->ID); ?>">
-                        <img class="next-image-preview" href="<?php echo get_permalink($next_image[0]->ID); ?>" src="<?php echo get_the_post_thumbnail_url($next_image[0]->ID, 'thumbnail'); ?>" alt="Image suivante">
+                <?php 
+                if (!empty($prev_image)): ?>
+                    <a href="<?php echo get_permalink($prev_image[0]->ID); ?>">
+                        <img class="next-image-preview" src="<?php echo get_the_post_thumbnail_url($prev_image[0]->ID, 'thumbnail'); ?>" alt="Image suivante">
                     </a>
-                <?php else: ?>
-                    <a href="<?php echo get_permalink($current_post_id); ?>">
-                        <img class="next-image-preview" href="<?php echo get_permalink($current_post_id); ?>" src="<?php echo get_the_post_thumbnail_url($current_post_id, 'thumbnail'); ?>" alt="Image actuelle">
+                <?php 
+                elseif (!empty($next_image)): ?>
+                    <a href="<?php echo get_permalink($next_image[0]->ID); ?>">
+                        <img class="next-image-preview" src="<?php echo get_the_post_thumbnail_url($next_image[0]->ID, 'thumbnail'); ?>" alt="Image précédente">
                     </a>
                 <?php endif; ?>
                 <div class="next-image-buttons">
-                <?php if (!empty($prev_image)): ?>
-                    <a href="<?php echo get_permalink($prev_image[0]->ID); ?>">
+                <?php if (!empty($next_image)): ?>
+                    <a href="<?php echo get_permalink($next_image[0]->ID); ?>">
                     <button class="arrow-button left"></button>
                     </a>
                 <?php endif; ?>
-                <?php if (!empty($next_image)): ?>
-                    <a href="<?php echo get_permalink($next_image[0]->ID); ?>">
+                <?php if (!empty($prev_image)): ?>
+                    <a href="<?php echo get_permalink($prev_image[0]->ID); ?>">
                     <button class="arrow-button right"></button>
                     </a>
                 <?php endif; ?>

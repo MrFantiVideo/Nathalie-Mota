@@ -1042,8 +1042,9 @@ footer
 
 .photos-container
 {
-    margin: auto;
-    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .picture-container
@@ -1055,6 +1056,11 @@ footer
 .entry-content
 {
     margin-top: 20px;
+    padding: 0 20px;
+    max-height: calc(100vh - 132px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
 }
 
 @media (max-width: 1240px)
@@ -1079,6 +1085,10 @@ footer
     .picture-left-side
     {
         border-bottom: none !important;
+    }
+    .entry-content
+    {
+        max-height: none;
     }
     .picture-bottom-side
     {
@@ -1121,7 +1131,9 @@ footer
 .picture-right-side img
 {
     width: 100%;
+    max-width: fit-content;
     height: auto;
+    max-height: 100%;
     display: block;
 }
 
